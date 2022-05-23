@@ -11,15 +11,18 @@ import (
 	"io/ioutil"
 )
 
+// CommonAPIClient interface on docker client: https://github.com/moby/moby/tree/master/client#go-client-for-the-docker-engine-api
 type CommonAPIClient interface {
 	ImageList(ctx context.Context, options types.ImageListOptions) ([]types.ImageSummary, error)
 	ImagePull(ctx context.Context, ref string, options types.ImagePullOptions) (io.ReadCloser, error)
 }
 
+// Handler handles docker API calls
 type Handler struct {
 	client CommonAPIClient
 }
 
+// Create creates new handler
 func Create() (*Handler, error) {
 	cl, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
@@ -36,6 +39,7 @@ type Image struct {
 	Size int64
 }
 
+// listImages gets a list of images from docker client using image name as reference
 func (h *Handler) listImages(ctx context.Context, images []string) ([]types.ImageSummary, error) {
 	listFilters := filters.NewArgs()
 	for _, i := range images {
@@ -52,6 +56,7 @@ func (h *Handler) listImages(ctx context.Context, images []string) ([]types.Imag
 	return list, err
 }
 
+// HasImage checks if image exists locally to docker client
 func (h *Handler) HasImage(ctx context.Context, image string) (bool, error) {
 	list, err := h.listImages(ctx, []string{image})
 	if err != nil {
@@ -60,6 +65,7 @@ func (h *Handler) HasImage(ctx context.Context, image string) (bool, error) {
 	return len(list) > 0, nil
 }
 
+// ListImages list docker images filtered by list of image names
 func (h *Handler) ListImages(ctx context.Context, images []string) ([]Image, error) {
 	list, err := h.listImages(ctx, images)
 	if err != nil {
@@ -75,6 +81,7 @@ func (h *Handler) ListImages(ctx context.Context, images []string) ([]Image, err
 	return imgList, nil
 }
 
+// GetImageInformation get docker image information
 func (h *Handler) GetImageInformation(ctx context.Context, image string) (*Image, error) {
 	list, err := h.ListImages(ctx, []string{image})
 	if err != nil {
@@ -86,6 +93,7 @@ func (h *Handler) GetImageInformation(ctx context.Context, image string) (*Image
 	return &list[0], nil
 }
 
+// PullImage pulls docker image from registry
 func (h *Handler) PullImage(ctx context.Context, image string) error {
 	opts := types.ImagePullOptions{}
 	res, err := h.client.ImagePull(ctx, image, opts)
