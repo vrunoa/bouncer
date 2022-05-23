@@ -31,7 +31,7 @@ func NewBouncer(configFile string) (*bouncer, error) {
 	if err != nil {
 		return nil, err
 	}
-	bouncer.DockerHandler = *handler
+	bouncer.DockerHandler = handler
 	return bouncer, nil
 }
 
