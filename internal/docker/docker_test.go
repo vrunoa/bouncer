@@ -56,3 +56,32 @@ func TestHandler_HasImage_NotFound(t *testing.T) {
 		t.Errorf("should have not found an image")
 	}
 }
+
+func TestHandler_listImagesOptions(t *testing.T) {
+	var opts types.ImageListOptions
+	h := &handler{
+		client: &MockCommonApiClient{
+			ImageListFn: func(ctx context.Context, options types.ImageListOptions) ([]types.ImageSummary, error) {
+				opts = options
+				return []types.ImageSummary{}, nil
+			},
+		},
+	}
+	imageName := "animage"
+	_, err := h.listImages(context.Background(), []string{imageName})
+	if err != nil {
+		t.Errorf("error raised -> %v", err)
+	}
+	if opts.All == false {
+		t.Errorf("wrong ImageListOptions setup for All. Want: %v. Got: %v", true, opts.All)
+	}
+	var refFound = false
+	for _, ref := range opts.Filters.Get("reference") {
+		if ref == imageName {
+			refFound = true
+		}
+	}
+	if refFound == false {
+		t.Errorf("failed to set filter")
+	}
+}

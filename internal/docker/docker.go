@@ -17,6 +17,13 @@ type CommonAPIClient interface {
 	ImagePull(ctx context.Context, ref string, options types.ImagePullOptions) (io.ReadCloser, error)
 }
 
+type Handler interface {
+	HasImage(ctx context.Context, image string) (bool, error)
+	ListImages(ctx context.Context, images []string) ([]Image, error)
+	GetImageInformation(ctx context.Context, image string) (*Image, error)
+	PullImage(ctx context.Context, image string) error
+}
+
 // handler handles docker API calls
 type handler struct {
 	client CommonAPIClient
