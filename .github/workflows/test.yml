@@ -52,6 +52,6 @@ jobs:
       - name: Upload binary
         uses: actions/upload-artifact@v2
         with:
-          name: saucectlbin
+          name: bouncerbin
           path: |
             bouncer
