@@ -21,7 +21,7 @@ func (m *MockCommonApiClient) ImagePull(ctx context.Context, ref string, options
 }
 
 func TestHandler_HasImage(t *testing.T) {
-	h := &Handler{
+	h := &handler{
 		client: &MockCommonApiClient{
 			ImageListFn: func(ctx context.Context, options types.ImageListOptions) ([]types.ImageSummary, error) {
 				img := types.ImageSummary{
@@ -41,7 +41,7 @@ func TestHandler_HasImage(t *testing.T) {
 }
 
 func TestHandler_HasImage_NotFound(t *testing.T) {
-	h := &Handler{
+	h := &handler{
 		client: &MockCommonApiClient{
 			ImageListFn: func(ctx context.Context, options types.ImageListOptions) ([]types.ImageSummary, error) {
 				return []types.ImageSummary{}, nil
