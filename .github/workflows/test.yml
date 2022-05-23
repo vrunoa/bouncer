@@ -45,9 +45,12 @@ jobs:
       image: golang:1.18
 
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
       - name: Build binary
         run: |
-          go build cmd/bouncer/bouncer
+          go build ./cmd/bouncer/bouncer
 
       - name: Upload binary
         uses: actions/upload-artifact@v2
