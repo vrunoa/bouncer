@@ -3,12 +3,10 @@ package docker
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 	"io"
-	"io/ioutil"
 )
 
 // CommonAPIClient interface on docker client: https://github.com/moby/moby/tree/master/client#go-client-for-the-docker-engine-api
@@ -103,15 +101,10 @@ func (h *handler) GetImageInformation(ctx context.Context, image string) (*Image
 // PullImage pulls docker image from registry
 func (h *handler) PullImage(ctx context.Context, image string) error {
 	opts := types.ImagePullOptions{}
-	res, err := h.client.ImagePull(ctx, image, opts)
+	_, err := h.client.ImagePull(ctx, image, opts)
 	if err != nil {
 		return err
 	}
-	defer res.Close()
-	stdout, err := ioutil.ReadAll(res)
-	if err != nil {
-		return err
-	}
-	fmt.Println(stdout)
+	// TODO - implement io.ReaderCloser stdout
 	return nil
 }

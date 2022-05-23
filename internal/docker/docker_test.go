@@ -111,3 +111,33 @@ func TestHandler_GetImageInformation(t *testing.T) {
 		t.Errorf("wrong image.Size -> Want: %v Got: %v", size, img.Size)
 	}
 }
+
+type FakeReaderCloser struct{}
+
+func (f *FakeReaderCloser) Read(p []byte) (n int, err error) {
+	return 0, nil
+}
+
+func (f *FakeReaderCloser) Close() error {
+	return nil
+}
+
+func TestHandler_PullImage(t *testing.T) {
+	var imagePullFnRef string
+	imageName := "anotherimage"
+	h := &handler{
+		client: &MockCommonApiClient{
+			ImagePullFN: func(ctx context.Context, ref string, options types.ImagePullOptions) (io.ReadCloser, error) {
+				imagePullFnRef = ref
+				return &FakeReaderCloser{}, nil
+			},
+		},
+	}
+	err := h.PullImage(context.Background(), imageName)
+	if err != nil {
+		t.Errorf("error raised -> %v", err)
+	}
+	if imagePullFnRef != imageName {
+		t.Errorf("wrong reference filter. Want: %v Got: %v", imageName, imagePullFnRef)
+	}
+}
