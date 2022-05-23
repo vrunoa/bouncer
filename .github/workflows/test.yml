@@ -82,7 +82,7 @@ jobs:
       - name: Test Fail config
         continue-on-error: true
         run: |
-          ./bouncer check --config-file test/config_fail.yaml; echo $? > bouncer-exit-code
+          ./bouncer check --config-file test/config_fail.yaml; echo $? > ./bouncer-exit-code
 
       - name: Check fail
         run: cat ./bouncer-exit-code | xargs -I{} test {} -eq 1
