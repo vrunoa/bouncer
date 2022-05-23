@@ -9,7 +9,10 @@ import (
 	"os"
 )
 
-const version = "0.0.1"
+var (
+	Version   = "0.0.0+unknown"
+	GitCommit = "unknown-commit-sha"
+)
 
 func setupLogging(verbose bool) {
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
@@ -53,7 +56,7 @@ func main() {
 	mainCmd := &cobra.Command{
 		Use:     "bouncer [command]",
 		Short:   "Security guard on docker image sizes",
-		Version: fmt.Sprintf("%s\n", version),
+		Version: fmt.Sprintf("%s\n(build %s)", Version, GitCommit),
 	}
 	mainCmd.AddCommand(checkCommand())
 	if err := mainCmd.Execute(); err != nil {
