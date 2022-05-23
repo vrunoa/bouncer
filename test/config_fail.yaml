@@ -6,4 +6,4 @@ image:
   policy:
     deny:
       - desc: Image too big
-        size: 20Mi
+        size: 10Mi
