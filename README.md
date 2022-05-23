@@ -45,3 +45,4 @@ go run cmd/bouncer/bouncer.go check --config-file ./test/config.yaml
 * Add test failure pipeline
 * More unit tests
 * Fix PullImage stdout
+* Refactor a lot
