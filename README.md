@@ -44,3 +44,4 @@ go run cmd/bouncer/bouncer.go check --config-file ./test/config.yaml
 * Improve message on failure, use human-readable sizes
 * Add test failure pipeline
 * More unit tests
+* Fix PullImage stdout
