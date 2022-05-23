@@ -77,4 +77,4 @@ jobs:
         run: docker build -f Dockerfile -t bouncer:latest .
 
       - name: Test OK config
-        run: bouncer check --config-file test/config.yaml
+        run: ./bouncer check --config-file test/config.yaml
