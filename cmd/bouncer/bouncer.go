@@ -6,12 +6,8 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/vrunoa/bouncer/internal/bouncer"
+	"github.com/vrunoa/bouncer/internal/version"
 	"os"
-)
-
-var (
-	Version   = "0.0.0+unknown"
-	GitCommit = "unknown-commit-sha"
 )
 
 func setupLogging(verbose bool) {
@@ -56,7 +52,7 @@ func main() {
 	mainCmd := &cobra.Command{
 		Use:     "bouncer [command]",
 		Short:   "Security guard on docker image sizes",
-		Version: fmt.Sprintf("%s\n(build %s)", Version, GitCommit),
+		Version: fmt.Sprintf("%s\n(build %s)", version.Version, version.GitCommit),
 	}
 	mainCmd.AddCommand(checkCommand())
 	if err := mainCmd.Execute(); err != nil {
