@@ -85,3 +85,29 @@ func TestHandler_listImagesOptions(t *testing.T) {
 		t.Errorf("failed to set filter")
 	}
 }
+
+func TestHandler_GetImageInformation(t *testing.T) {
+	imageID := "whatever"
+	size := int64(200009)
+	h := &handler{
+		client: &MockCommonApiClient{
+			ImageListFn: func(ctx context.Context, options types.ImageListOptions) ([]types.ImageSummary, error) {
+				img := types.ImageSummary{
+					ID:   imageID,
+					Size: size,
+				}
+				return []types.ImageSummary{img}, nil
+			},
+		},
+	}
+	img, err := h.GetImageInformation(context.Background(), "animage")
+	if err != nil {
+		t.Errorf("error raised -> %v", err)
+	}
+	if img.Name != imageID {
+		t.Errorf("wrong image.Name -> Want: %v Got: %v", imageID, img.Name)
+	}
+	if img.Size != size {
+		t.Errorf("wrong image.Size -> Want: %v Got: %v", size, img.Size)
+	}
+}
