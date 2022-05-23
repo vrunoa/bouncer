@@ -32,8 +32,14 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
+      - name: Install dependencies
+        run: |
+          go install github.com/mcubik/goverreport@latest
+
       - name: Unit tests
-        run: go test ./...
+        run: |
+          go test -coverprofile=coverage.out ./... -v
+          goverreport -sort=block -order=desc -threshold=80
 
   build:
     needs:
