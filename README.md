@@ -43,6 +43,6 @@ go run cmd/bouncer/bouncer.go check --config-file ./test/config.yaml
 * Support multiple image checks
 * Improve message on failure, use human-readable sizes
 * Add test failure pipeline
-* More unit tests
+* More unit tests, increase code coverage to 70%
 * Fix PullImage stdout
 * Refactor a lot

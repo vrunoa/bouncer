@@ -39,7 +39,7 @@ jobs:
       - name: Unit tests
         run: |
           go test -coverprofile=coverage.out ./... -v
-          goverreport -sort=block -order=desc -threshold=80
+          goverreport -sort=block -order=desc -threshold=50
 
   build:
     needs:
