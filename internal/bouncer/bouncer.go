@@ -55,12 +55,12 @@ func (b *bouncer) Check() ([]PolicyResult, error) {
 	}
 	if !has {
 		log.Debug().Str("image", imageName).Msg("pulling image")
-		log.Debug().Str("start-time", fmt.Sprintf("%s", time.Now())).Msg("capturing metrics")
+		log.Debug().Str("start-time", time.Now().String()).Msg("capturing metrics")
 		err := b.DockerHandler.PullImage(ctx, imageName)
 		if err != nil {
 			return nil, err
 		}
-		log.Debug().Str("end-time", fmt.Sprintf("%s", time.Now())).Msg("capturing metrics")
+		log.Debug().Str("end-time", time.Now().String()).Msg("capturing metrics")
 	}
 	log.Debug().Str("image", imageName).Msg("getting image information")
 	img, err := b.DockerHandler.GetImageInformation(ctx, imageName)

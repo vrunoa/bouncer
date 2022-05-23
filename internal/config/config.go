@@ -32,10 +32,11 @@ func ReadYaml(filePath string) (*Configuration, error) {
 		return &Configuration{}, errors.New("empty file name")
 	}
 	f, err := os.Open(filePath)
-	defer f.Close()
 	if err != nil {
 		return &Configuration{}, err
 	}
+	defer f.Close()
+
 	var c Configuration
 	err = yaml.NewDecoder(f).Decode(&c)
 	if err != nil {
