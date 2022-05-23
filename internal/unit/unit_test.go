@@ -44,7 +44,7 @@ func TestParseSize(t *testing.T) {
 			},
 		},
 		{
-			name: "invalid size, raise error",
+			name: "invalid size, raise error unsupported unit",
 			args: args{
 				inputSize:         "2GB",
 				expectedFloatSize: 0,
@@ -53,7 +53,7 @@ func TestParseSize(t *testing.T) {
 			},
 		},
 		{
-			name: "invalid size, raise error",
+			name: "invalid size, raise error on wrong float",
 			args: args{
 				inputSize:         "2.2.2GB",
 				expectedFloatSize: 0,
