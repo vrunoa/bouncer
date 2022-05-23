@@ -1,0 +1,80 @@
+name: tests pipeline
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+
+  lint:
+    runs-on: ubuntu-latest
+    container:
+      image: golang:1.18
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Lint project
+        run: |
+          go vet ./...
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.46.1
+          golangci-lint run ./... -v
+
+  unit:
+    runs-on: ubuntu-latest
+    container:
+      image: golang:1.18
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Unit tests
+        run: go test ./...
+
+  build:
+    needs:
+      - lint
+      - unit
+    runs-on: ubuntu-latest
+    container:
+      image: golang:1.18
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Build binary
+        run: go build ./cmd/bouncer/bouncer.go
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: bouncerbin
+          path: |
+            bouncer
+
+  integration:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Download saucectl binary
+        uses: actions/download-artifact@v2
+        with:
+          name: bouncerbin
+
+      - name: Set permissions
+        run: chmod +x ./bouncer
+
+      - name: Build image
+        run: docker build -f Dockerfile -t bouncer:latest .
+
+      - name: Test OK config
+        run: ./bouncer check --config-file test/config.yaml

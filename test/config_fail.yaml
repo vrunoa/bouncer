@@ -1,0 +1,9 @@
+---
+apiVersion: v1alpha
+kind: bouncer
+image:
+  name: bouncer:latest
+  policy:
+    deny:
+      - desc: Image too big
+        size: 10Mi
