@@ -12,8 +12,8 @@ builds:
       - darwin
       - linux
     ldflags:
-      - -X github.com/vrunoa/cmd/bouncer/bouncer.Version={{.Version}}
-      - -X github.com/vrunoa/cmd/bouncer/bouncer.GitCommit={{.Commit}}
+      - -X github.com/vrunoa/bouncer/internal/version.Version={{.Version}}
+      - -X github.com/vrunoa/bouncer/internal/version.GitCommit={{.Commit}}
 
 archives:
   - replacements:
