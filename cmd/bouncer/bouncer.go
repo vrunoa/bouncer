@@ -26,6 +26,9 @@ func checkCommand() *cobra.Command {
 		Short: "check image",
 		Long:  "check your image size and ready times",
 		Run: func(cmd *cobra.Command, args []string) {
+			if configFile == "" {
+				log.Fatal().Msg("missing config-file flag")
+			}
 			b, err := bouncer.NewBouncer(configFile)
 			if err != nil {
 				log.Fatal().Err(err).Msg("failed to create bouncer")
@@ -35,11 +38,11 @@ func checkCommand() *cobra.Command {
 				log.Fatal().Err(err).Msg("failed to run check")
 			}
 			for _, res := range results {
-				if res.Status != 0 {
-					log.Fatal().Msg(res.Message)
-				} else {
+				if res.Status == 0 {
 					log.Info().Str("policy", res.Desc).Msg(res.Message)
+					continue
 				}
+				log.Fatal().Str("policy", res.Desc).Msg(res.Message)
 			}
 		},
 	}
