@@ -50,7 +50,7 @@ jobs:
 
       - name: Build binary
         run: |
-          go build ./cmd/bouncer/bouncer
+          go build ./cmd/bouncer/bouncer.go
 
       - name: Upload binary
         uses: actions/upload-artifact@v2
