@@ -3,7 +3,7 @@ package config
 import (
 	"errors"
 	"github.com/vrunoa/bouncer/internal/unit"
-	"gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v2"
 	"os"
 )
 
