@@ -7,10 +7,11 @@ on:
       - master
 
 jobs:
+
   lint:
     runs-on: ubuntu-latest
     container:
-      image: golang:1.18-alpine
+      image: golang:1.18
 
     steps:
       - name: Checkout Code
@@ -25,21 +26,23 @@ jobs:
   unit:
     runs-on: ubuntu-latest
     container:
-      image: golang:1.18-alpine
+      image: golang:1.18
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: Lint project
+      - name: Unit tests
         run: |
           go test ./...
 
   build:
-    needs: unit
+    needs:
+      - lint
+      - unit
     runs-on: ubuntu-latest
     container:
-      image: golang:1.18-alpine
+      image: golang:1.18
 
     steps:
       - name: Build binary
