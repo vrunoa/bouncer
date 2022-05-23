@@ -1,0 +1,34 @@
+before:
+  hooks:
+    - go mod download
+    - go generate ./...
+
+builds:
+  -
+    main: ./cmd/bouncer/bouncer.go
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+    ldflags:
+      - -X github.com/vrunoa/cmd/bouncer/bouncer.Version={{.Version}}
+      - -X github.com/vrunoa/cmd/bouncer/bouncer.GitCommit={{.Commit}}
+
+archives:
+  - replacements:
+      darwin: mac
+      linux: linux
+      windows: win
+      amd64: 64-bit
+      386: 32-bit
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - LICENSE
+
+checksum:
+  name_template: 'checksums.txt'
+
+project_name: bouncer
