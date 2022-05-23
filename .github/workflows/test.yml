@@ -33,8 +33,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Unit tests
-        run: |
-          go test ./...
+        run: go test ./...
 
   build:
     needs:
@@ -49,8 +48,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build binary
-        run: |
-          go build ./cmd/bouncer/bouncer.go
+        run: go build ./cmd/bouncer/bouncer.go
 
       - name: Upload binary
         uses: actions/upload-artifact@v2
@@ -58,3 +56,25 @@ jobs:
           name: bouncerbin
           path: |
             bouncer
+
+  integration:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Download saucectl binary
+        uses: actions/download-artifact@v2
+        with:
+          name: bouncerbin
+
+      - name: Set permissions
+        run: chmod +x ./bouncer
+
+      - name: Build image
+        run: docker build -f Dockerfile -t bouncer:latest .
+
+      - name: Test OK config
+        run: bouncer check --config-file test/config.yaml
