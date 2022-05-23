@@ -56,7 +56,7 @@ func main() {
 	}
 	mainCmd.AddCommand(checkCommand())
 	if err := mainCmd.Execute(); err != nil {
-		log.Fatal().Err(err).Msg("wops! seems like we meesed up")
+		log.Fatal().Err(err).Msg("wops! seems like we messed up")
 		os.Exit(1)
 	}
 }
