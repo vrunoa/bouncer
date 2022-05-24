@@ -95,9 +95,7 @@ cleanup() {
   fi
 }
 
-
 # Execution
-cleanup
 initArch
 initOS
 verifySupported
