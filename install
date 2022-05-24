@@ -67,10 +67,12 @@ downloadFile() {
   BOUNCER_DIST="bouncer_${TAG}_${OS}_${ARCH}.tar.gz"
   DOWNLOAD_URL="https://github.com/vrunoa/bouncer/releases/download/v$TAG/$BOUNCER_DIST"
   BOUNCER_TMP_ROOT="$(mktemp -dt bouncer-installer)"
+  BOUNCER_TMP_ROOT="${BOUNCER_TMP_ROOT}/bouncer"
+  mkdir -p "${BOUNCER_TMP_ROOT}"
   BOUNCER_TMP_FILE="$BOUNCER_TMP_ROOT/$BOUNCER_DIST"
-  echo "Downloading $DOWNLOAD_URL destination $BOUNCER_TMP_FILE"
+  echo "Downloading: $DOWNLOAD_URL -> $BOUNCER_TMP_FILE"
   if type "curl" > /dev/null; then
-    curl -LJO "${DOWNLOAD_URL}" -o "${BOUNCER_TMP_FILE}"
+    curl -SsL "${DOWNLOAD_URL}" -o "${BOUNCER_TMP_FILE}"
   elif type "wget" > /dev/null; then
     wget -q -O "$BOUNCER_TMP_FILE" "$DOWNLOAD_URL"
   fi
@@ -78,12 +80,13 @@ downloadFile() {
 
 # installs it.
 installFile() {
-  BOUNCER_TMP="$BOUNCER_TMP_ROOT/$PROJECT_NAME"
-  mkdir -p "$BOUNCER_TMP"
-  echo $BOUNCER_TMP
-  tar xf "$BOUNCER_TMP_FILE" -C "$BOUNCER_TMP"
-  BOUNCER_TMP_BIN="$BOUNCER_TMP/$OS-$ARCH/$PROJECT_NAME"
-  echo $BOUNCER_TMP_BIN
+  echo "Extracting: tar xf \"${BOUNCER_TMP_FILE}\" -C \"${BOUNCER_TMP_ROOT}\""
+  tar xf "$BOUNCER_TMP_FILE" -C "$BOUNCER_TMP_ROOT"
+  BOUNCER_BIN=${BOUNCER_TMP_ROOT}/bouncer
+  chmod +x $BOUNCER_BIN
+  mv $BOUNCER_BIN /usr/local/bin/bouncer
+  VERSION=$(/usr/local/bin/bouncer --version)
+  echo -e "installed version:\n $VERSION"
 }
 
 cleanup() {
@@ -100,4 +103,4 @@ initOS
 verifySupported
 downloadFile
 installFile
-# cleanup
+cleanup
