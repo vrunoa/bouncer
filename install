@@ -4,6 +4,8 @@ set -u
 # https://github.com/helm/helm/blob/main/scripts/get
 
 PROJECT_NAME="bouncer"
+BOUNCER_TAG="0.0.3"
+TAG=${BOUNCER_TAG}
 
 : ${USE_SUDO:="true"}
 : ${BOUNCER_INSTALL_DIR:="/usr/local/bin"}
@@ -58,8 +60,6 @@ verifySupported() {
     exit 1
   fi
 }
-
-TAG=0.0.3
 
 # downloadFile downloads the latest binary package and also the checksum
 # for that binary.
