@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -u
-# The install script is based off of the Apache License, Version 2.0 (the "License") script from helm,
-# https://github.com/helm/helm/blob/main/scripts/get
+# The install script is based off of the Apache License, Version 2.0 (the "License") script from helm https://github.com/helm/helm/blob/main/scripts/get
 
 PROJECT_NAME="bouncer"
 BOUNCER_TAG="0.0.3"
