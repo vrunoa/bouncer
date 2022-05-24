@@ -16,3 +16,6 @@
 
 # InteliJ
 .idea
+
+#macOs
+.DS_Store
