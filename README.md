@@ -46,4 +46,4 @@ go run cmd/bouncer/bouncer.go check --config-file ./test/config.yaml
 * More unit tests, increase code coverage to 70%
 * Fix PullImage stdout
 * Refactor a lot
-* Add bash installer
+* Unhardcode version from install script
