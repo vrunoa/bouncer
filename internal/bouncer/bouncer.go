@@ -22,10 +22,6 @@ func NewBouncer(configFile string) (*bouncer, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = cfg.Validate()
-	if err != nil {
-		return nil, err
-	}
 	bouncer.Configuration = *cfg
 	handler, err := docker.Create()
 	if err != nil {
@@ -79,16 +75,11 @@ func (b *bouncer) checkPolicies(image *docker.Image, policies []config.DenyPolic
 			Desc:    deny.Desc,
 			Message: "policy ok",
 		}
-		sizeFloat, sizeUnit, err := unit.ParseSize(deny.Size)
-		if err != nil {
+		fmt.Println(deny.FloatSize)
+		sizeBytes := unit.ToBytes(deny.FloatSize, deny.Unit)
+		if image.Size > sizeBytes {
 			res.Status = 1
-			res.Message = err.Error()
-		} else {
-			sizeBytes := unit.ToBytes(sizeFloat, sizeUnit)
-			if image.Size > sizeBytes {
-				res.Status = 1
-				res.Message = fmt.Sprintf("policy failed -> image size: %d - deny size: %d", image.Size, sizeBytes)
-			}
+			res.Message = fmt.Sprintf("policy failed -> image size: %d - deny size: %d", image.Size, sizeBytes)
 		}
 		results = append(results, res)
 	}
