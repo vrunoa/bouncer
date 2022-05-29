@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+set -u
+# The install script is based off of the Apache License, Version 2.0 (the "License") script from helm https://github.com/helm/helm/blob/main/scripts/get
+
+PROJECT_NAME="bouncer"
+BOUNCER_TAG="0.0.3"
+TAG=${BOUNCER_TAG}
+
+: ${USE_SUDO:="true"}
+: ${BOUNCER_INSTALL_DIR:="/usr/local/bin"}
+
+# initArch discovers the architecture for this system.
+initArch() {
+  ARCH=$(uname -m)
+  case $ARCH in
+    armv5*) ARCH="armv5";;
+    armv6*) ARCH="armv6";;
+    armv7*) ARCH="arm";;
+    aarch64) ARCH="arm64";;
+    x86) ARCH="386";;
+    x86_64) ARCH="64-bit";;
+    i686) ARCH="386";;
+    i386) ARCH="386";;
+  esac
+}
+
+# initOS discovers the operating system for this system.
+initOS() {
+  OS=$(echo `uname`|tr '[:upper:]' '[:lower:]')
+
+  case "$OS" in
+    # Minimalist GNU for Windows
+    darwin*) OS='mac';;
+    mingw*) OS='windows';;
+  esac
+}
+
+# runs the given command as root (detects if we are root already)
+runAsRoot() {
+  if [ $EUID -ne 0 -a "$USE_SUDO" = "true" ]; then
+    sudo "${@}"
+  else
+    "${@}"
+  fi
+}
+
+# verifySupported checks that the os/arch combination is supported for
+# binary builds.
+verifySupported() {
+  local supported="mac-64-bit"
+  if ! echo "${supported}" | grep -q "${OS}-${ARCH}"; then
+    echo "No prebuilt binary for ${OS}-${ARCH}."
+    echo "To build from source, go to https://github.com/vruno/bouncer"
+    exit 1
+  fi
+
+  if ! type "curl" > /dev/null && ! type "wget" > /dev/null; then
+    echo "Either curl or wget is required"
+    exit 1
+  fi
+}
+
+# downloadFile downloads the latest binary package and also the checksum
+# for that binary.
+downloadFile() {
+  BOUNCER_DIST="bouncer_${TAG}_${OS}_${ARCH}.tar.gz"
+  DOWNLOAD_URL="https://vrunoa.github.io/bouncer/dist/$BOUNCER_DIST"
+  BOUNCER_TMP_ROOT="$(mktemp -dt bouncer-installer)"
+  BOUNCER_TMP_ROOT="${BOUNCER_TMP_ROOT}/bouncer"
+  mkdir -p "${BOUNCER_TMP_ROOT}"
+  BOUNCER_TMP_FILE="$BOUNCER_TMP_ROOT/$BOUNCER_DIST"
+  echo "Downloading: $DOWNLOAD_URL -> $BOUNCER_TMP_FILE"
+  if type "curl" > /dev/null; then
+    curl -SsL "${DOWNLOAD_URL}" -o "${BOUNCER_TMP_FILE}"
+  elif type "wget" > /dev/null; then
+    wget -q -O "$BOUNCER_TMP_FILE" "$DOWNLOAD_URL"
+  fi
+}
+
+# installs it.
+installFile() {
+  echo "Extracting: tar xf \"${BOUNCER_TMP_FILE}\" -C \"${BOUNCER_TMP_ROOT}\""
+  tar xf "$BOUNCER_TMP_FILE" -C "$BOUNCER_TMP_ROOT"
+  BOUNCER_BIN=${BOUNCER_TMP_ROOT}/bouncer
+  chmod +x $BOUNCER_BIN
+  mv $BOUNCER_BIN /usr/local/bin/bouncer
+  VERSION=$(/usr/local/bin/bouncer --version)
+  echo -e "installed version:\n $VERSION"
+}
+
+cleanup() {
+  if [[ -d "${BOUNCER_TMP_ROOT:-}" ]]; then
+    rm -rf "$BOUNCER_TMP_ROOT"
+  fi
+}
+
+# Execution
+initArch
+initOS
+verifySupported
+downloadFile
+installFile
+cleanup
