@@ -3,6 +3,7 @@ package bouncer
 import (
 	"github.com/vrunoa/bouncer/internal/config"
 	"github.com/vrunoa/bouncer/internal/docker"
+	"github.com/vrunoa/bouncer/internal/unit"
 	"testing"
 )
 
@@ -32,7 +33,7 @@ func TestCheckPolicies(t *testing.T) {
 			name: "test policy success",
 			args: args{
 				policies: []config.DenyPolicy{
-					{Size: "2.2Gi", Desc: "big image"},
+					{Size: "2.2Gi", Desc: "big image", Unit: unit.Giga, FloatSize: 2},
 				},
 				img: docker.Image{
 					Size: 100000,
@@ -48,7 +49,7 @@ func TestCheckPolicies(t *testing.T) {
 			name: "test policy fail",
 			args: args{
 				policies: []config.DenyPolicy{
-					{Size: "1Mi", Desc: "really tiny image"},
+					{Size: "1Mi", Desc: "really tiny image", Unit: unit.Mega, FloatSize: 1},
 				},
 				img: docker.Image{
 					Size: 2000000,
