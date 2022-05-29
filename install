@@ -64,7 +64,7 @@ verifySupported() {
 # for that binary.
 downloadFile() {
   BOUNCER_DIST="bouncer_${TAG}_${OS}_${ARCH}.tar.gz"
-  DOWNLOAD_URL="https://github.com/vrunoa/bouncer/releases/download/v$TAG/$BOUNCER_DIST"
+  DOWNLOAD_URL="https://vrunoa.github.io/bouncer/dist/$BOUNCER_DIST"
   BOUNCER_TMP_ROOT="$(mktemp -dt bouncer-installer)"
   BOUNCER_TMP_ROOT="${BOUNCER_TMP_ROOT}/bouncer"
   mkdir -p "${BOUNCER_TMP_ROOT}"
