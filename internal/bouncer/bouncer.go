@@ -75,7 +75,6 @@ func (b *bouncer) checkPolicies(image *docker.Image, policies []config.DenyPolic
 			Desc:    deny.Desc,
 			Message: "policy ok",
 		}
-		fmt.Println(deny.FloatSize)
 		sizeBytes := unit.ToBytes(deny.FloatSize, deny.Unit)
 		if image.Size > sizeBytes {
 			res.Status = 1
